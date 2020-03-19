@@ -8,19 +8,21 @@ static double a = -1.0, b = 1.0, zoom = 1;
 static int  y_ofst = 0, x_ofst = 0;
 static int points = 4;
 
-double f(double x)
+double f(double x) // function
 {
-  return tan(x);
+  return tan(x); // now its tan
 }
 
-double df(double x)
+double df(double x) // first derivative
 {
   return 1 / (cos(x) * cos(x));
 }
-double ddf(double x)
+double ddf(double x) // second derivative
 {
-  return -2 * sin(x) / (cos(x) * cos(x) * cos(x));
+  return 2 * sin(x) / (cos(x) * cos(x) * cos(x));
 }
+
+
 int sign(double x)
 {
   if(x > 0) return 1;
@@ -42,9 +44,9 @@ static void DrawWindowContent (void)
   WDrawLine (0, height / 2 + y_ofst, width, height / 2 + y_ofst);
   WDrawLine (width * (-a) / (b - a) - x_ofst, 0, width * (-a) / (b - a) - x_ofst, height);
 
-  WDrawString ("Press Q to quit, F2 - 1st method F3 - approximatable curve; to change function; +- to zoom; p/m to change number of points",   10, 20);
+  WDrawString ("Press Q to quit, F1 - 1st method F2-2nd  F3 - approximatable curve; to change function; +- to zoom; p/m to change number of points",   10, 20);
 
-if(variant[0])
+if(variant[1]) // second method. it uses only f and ddf
 {
       WSetColor (BLUE);
       int i, i_start, i_end, j;
@@ -84,7 +86,7 @@ if(variant[0])
             f3 = (f(a + (j + 2) * (b - a) / points) - a3) / (b - a)  * points;
             a4 = ((sign(f3) != sign(f2)) ? 0 : sign(f2)) * fmin(fabs(f3), fabs(f2));
             a3 = (a3 - a1) / (-x_start_0 + x_end_0);
-            a2 = (3 * f2 - ddf(a) * (b - a) / points / 2 - a4) / 2;
+            a2 = (3 * f2 - ddf(a) * (b - a) / points / 2. - a4) / 2;
           }
           if(j == points - 1)
           {
@@ -92,7 +94,7 @@ if(variant[0])
             f2 = (a3 - a1) / (b - a)  * points;
             a2 = ((sign(f1) != sign(f2)) ? 0 : sign(f2)) * fmin(fabs(f1), fabs(f2));
             a3 = (a3 - a1) / (-x_start_0 + x_end_0);
-            a4 = (3 *  a3 + ddf(b) * (b - a) / points / 2 - a2) / 2;
+            a4 = (3 *  f2 + ddf(b) * (b - a) / points / 2. - a2) / 2;
           }
           
 
@@ -115,8 +117,8 @@ if(variant[0])
 
             x_start_r = (((x_start + x_ofst) / (width)) * (b - a) + a) / zoom;//похоже на функцию перехода
             x_end_r = (((x_end + x_ofst) / (width)) * (b - a) + a) / zoom;
-            y_start_r = a1 + a2 * (x_start_r - x_start_0) + a3 * (x_start_r - x_start_0) * (x_start_r - x_start_0)  + a4 * (x_start_r - x_start_0) * (x_start_r - x_start_0)* (x_start_r - x_start_0);
-            y_end_r = a1 + a2 * (x_end_r - x_start_0) + a3 * (x_end_r - x_start_0) * (x_end_r - x_start_0)  + a4 * (x_end_r - x_start_0) * (x_end_r - x_start_0)* (x_end_r - x_start_0);
+            y_start_r = a1 +  (x_start_r - x_start_0) * (a2 + (x_start_r - x_start_0) * (a3 + a4 * (x_start_r - x_start_0)));
+            y_end_r = a1 + (x_end_r - x_start_0) * (a2 + (x_end_r - x_start_0)  * (a3 + (x_end_r - x_start_0) * a4));
             //да, функцию выше можно переписать нормально
             y_start = height/2 - (y_start_r / ar) + y_ofst;
             y_end = height/2 - (y_end_r / ar) + y_ofst;
@@ -126,7 +128,7 @@ if(variant[0])
         }
       }
     }
-if(variant[1])
+if(variant[0]) // the first method. It uses f and df.  Ermit polynoms.
     {
       WSetColor (GREEN);
       int i, i_start, i_end, j;
@@ -172,8 +174,8 @@ if(variant[1])
 
             x_start_r = (((x_start + x_ofst) / (width)) * (b - a) + a) / zoom;//похоже на функцию перехода
             x_end_r = (((x_end + x_ofst) / (width)) * (b - a) + a) / zoom;
-            y_start_r = a1 + a2 * (x_start_r - x_start_0) + a3 * (x_start_r - x_start_0) * (x_start_r - x_start_0)  + a4 * (x_start_r - x_start_0) * (x_start_r - x_start_0)* (x_start_r - x_start_0);
-            y_end_r = a1 + a2 * (x_end_r - x_start_0) + a3 * (x_end_r - x_start_0) * (x_end_r - x_start_0)  + a4 * (x_end_r - x_start_0) * (x_end_r - x_start_0)* (x_end_r - x_start_0);
+            y_start_r = a1 +  (x_start_r - x_start_0) * (a2 + (x_start_r - x_start_0) * (a3 + a4 * (x_start_r - x_start_0)));
+            y_end_r = a1 + (x_end_r - x_start_0) * (a2 + (x_end_r - x_start_0)  * (a3 + (x_end_r - x_start_0) * a4));
             //да, функцию выше можно переписать нормально
             y_start = height/2 - (y_start_r / ar) + y_ofst;
             y_end = height/2 - (y_end_r / ar) + y_ofst;
