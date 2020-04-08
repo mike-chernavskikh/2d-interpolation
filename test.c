@@ -285,6 +285,18 @@ main (void)
   int ret_code;
 
   /* Вывод на экран X11. */
+  printf("Enter interpolation segment: ");
+  if(!(scanf("%lf %lf", &a, &b) == 2)) 
+  {
+    printf("Error while reading [a b]\n");
+    return 1;
+  }
+  printf("Enter number of interpolation points: ");
+  if(!(scanf("%d", &points) == 1)) 
+  {
+    printf("Error while reading points\n");
+    return 1;
+  }
   ret_code = DrawWindow (DrawWindowContent, KeyPressFunction);
   if (ret_code)
     {
