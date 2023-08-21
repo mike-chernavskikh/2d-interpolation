@@ -1,5 +1,7 @@
-# 2d-interpoation
-# how to run
+
+# university coding project
+# 2d-interpolation
+# how to run:
 # change function in "test.c": enter f, df, ddf
 # make
 # ./plot
